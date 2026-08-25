@@ -65,5 +65,11 @@ class Solver:
                 v_viscosity[i,j] = nu * (differentials.centralDifference(grid.v[i+1,j], grid.v[i,j], grid.v[i-1,j], grid.h) + differentials.centralDifference(grid.v[i,j+1], grid.v[i,j], grid.v[i,j-1], grid.h))
         return u_viscosity, v_viscosity
     
+    def VelocityStep(self, u, v, u_viscosity, v_viscosity, u_advection, v_advection, delta_t):
+        u_star = np.zeros_like(u)
+        v_star = np.zeros_like(v)
+        u_star = u + delta_t * (-u_advection + u_viscosity)
+        v_star = v + delta_t * (-v_advection + v_viscosity)
+        return u_star, v_star
 grid = Grid(0.1, 0, 1, 0, 1)
 Solver().PoissonSolver(grid.p, np.zeros(grid.p.shape), grid.h, 0.1, 100)
