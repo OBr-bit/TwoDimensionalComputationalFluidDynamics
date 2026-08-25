@@ -3,6 +3,7 @@ from typing import Any
 
 import numpy as np 
 import math
+import differentials
 from grid import Grid
 from differentials import Differentials
 class Solver:
@@ -53,5 +54,16 @@ class Solver:
                 v_advection[i,j] = grid.u[i,j] * dv_dx + grid.v[i,j] * dv_dy
 
         return u_advection, v_advection
+    
+    def ViscosityTerm(self, grid, nu):
+        differentials = Differentials()
+        u_viscosity = np.zeros_like(grid.u)
+        v_viscosity = np.zeros_like(grid.v)
+        for i in range(1, grid.u.shape[0] - 1, 1):
+            for j in range(1, grid.v.shape[1] - 1, 1):
+                u_viscosity[i,j] = nu * (differentials.centralDifference(grid.u[i+1, j], grid.u[i,j], grid.u[i-1,j], grid.h) + differentials.centralDifference(grid.u[i, j+1], grid.u[i, j], grid.u[i, j-1], grid.h))
+                v_viscosity[i,j] = nu * (differentials.centralDifference(grid.v[i+1,j], grid.v[i,j], grid.v[i-1,j], grid.h) + differentials.centralDifference(grid.v[i,j+1], grid.v[i,j], grid.v[i,j-1], grid.h))
+        return u_viscosity, v_viscosity
+    
 grid = Grid(0.1, 0, 1, 0, 1)
 Solver().PoissonSolver(grid.p, np.zeros(grid.p.shape), grid.h, 0.1, 100)
