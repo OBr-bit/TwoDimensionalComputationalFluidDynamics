@@ -71,5 +71,16 @@ class Solver:
         u_star = u + delta_t * (-u_advection + u_viscosity)
         v_star = v + delta_t * (-v_advection + v_viscosity)
         return u_star, v_star
+
+    def PressureCorrection(self, u_star, v_star, p, rho, delta_t, h):
+        differentials = Differentials()
+        u_calculated = np.zeros_like(u_star)
+        v_calculated = np.zeros_like(v_star)
+        for i in range(1, u_star.shape[0] - 1, 1):
+            for j in range(1, u_star.shape[1] - 1, 1):
+                u_calculated[i,j] = u_star[i,j] - (delta_t / rho) * differentials.centralDifferenceFirst(p[i+1,j], p[i-1,j], h)
+                v_calculated[i,j] = v_star[i,j] - (delta_t / rho) * differentials.centralDifferenceFirst(p[i,j+1], p[i,j-1], h)
+        return u_calculated, v_calculated
+        
 grid = Grid(0.1, 0, 1, 0, 1)
 Solver().PoissonSolver(grid.p, np.zeros(grid.p.shape), grid.h, 0.1, 100)
