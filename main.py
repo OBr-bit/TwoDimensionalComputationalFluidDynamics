@@ -7,11 +7,11 @@ from visualisation import Visualisation
 import numpy as np
 
 H = 0.05
-TIMESTEP = 0.0005
-NU = 0.01
+NU = 0.1
+TIMESTEP = 0.005
 RHO = 1
-TOLERANCE = 0.0001
-MAX_ITERATIONS = 500
+TOLERANCE = 0.001
+MAX_ITERATIONS = 100
 boundary_conditions = BoundaryConditions()
 solver = Solver()
 visualise = Visualisation()
@@ -22,17 +22,18 @@ grid.u, grid.v = boundary_conditions.ApplyBoundaryConditions(grid.u, grid.v)
 grid.p = boundary_conditions.ApplyPressureBoundary(grid.p)
 
 play = True
+steps = 0
 try:
     while play:
+        steps += 1
         u_advection, v_advection = solver.AdvectionTerm(grid)
         u_viscosity, v_viscosity = solver.ViscosityTerm(grid, NU)
-
         u_star, v_star = solver.VelocityStep(grid.u, grid.v, u_viscosity, v_viscosity, u_advection, v_advection, TIMESTEP)
-        
+        u_star, v_star = boundary_conditions.ApplyBoundaryConditions(u_star, v_star)
         f = solver.Divergence(u_star, v_star, H, RHO, TIMESTEP)
 
         p = solver.PoissonSolver(grid.p, f, H, TOLERANCE, MAX_ITERATIONS)
-        p = solver.SmoothPressure(p)
+        #p = solver.SmoothPressure(p)
         p = boundary_conditions.ApplyPressureBoundary(p)
 
         u_calculated, v_calculated = solver.PressureCorrection(u_star, v_star, p, RHO, TIMESTEP, H)
@@ -44,8 +45,9 @@ try:
         #print(grid.u)
         #print(grid.v)
         #print(grid.p)
-
-        visualise.Visualise(grid)
+        print(steps)
+        if steps % 40 == 0:
+            visualise.Visualise(grid, steps)
 
         #response = input()
         #if response != "":

@@ -9,7 +9,7 @@ class BoundaryConditions:
         v[:, 0] = 0
         v[:, -1] = 0
         return u, v
-
+         
     def ApplyPressureBoundary(self, p):
         p[0, :] = p[1, :]    # bottom
         p[-1, :] = p[-2, :]  # top
