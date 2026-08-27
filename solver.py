@@ -22,6 +22,12 @@ class Solver:
                 break
             
         return p
+    def SmoothPressure(self, p):
+        smooth = np.zeros_like(p)
+        for i in range(1, p.shape[0] - 1, 1):
+            for j in range(1, p.shape[1] - 1, 1):
+                smooth[i,j] = (p[i,j] + p[i-1,j] + p[i+1,j] + p[i,j-1] + p[i,j+1]) / 5
+        return smooth
     def AdvectionTerm(self, grid):
         differential = Differentials()
         u_advection = np.zeros_like(grid.u)
