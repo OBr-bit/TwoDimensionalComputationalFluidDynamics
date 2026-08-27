@@ -12,6 +12,7 @@ TIMESTEP = 0.005
 RHO = 1
 TOLERANCE = 0.001
 MAX_ITERATIONS = 100
+CONVERGENCE_TOLERANCE = 0.0001
 boundary_conditions = BoundaryConditions()
 solver = Solver()
 visualise = Visualisation()
@@ -23,8 +24,12 @@ grid.p = boundary_conditions.ApplyPressureBoundary(grid.p)
 
 play = True
 steps = 0
+u_before = np.zeros_like(grid.u)
+v_before = np.zeros_like(grid.v)
 try:
     while play:
+        u_before = np.copy(grid.u)
+        v_before = np.copy(grid.v)
         steps += 1
         u_advection, v_advection = solver.AdvectionTerm(grid)
         u_viscosity, v_viscosity = solver.ViscosityTerm(grid, NU)
@@ -33,7 +38,7 @@ try:
         f = solver.Divergence(u_star, v_star, H, RHO, TIMESTEP)
 
         p = solver.PoissonSolver(grid.p, f, H, TOLERANCE, MAX_ITERATIONS)
-        #p = solver.SmoothPressure(p)
+        p = solver.SmoothPressure(p)
         p = boundary_conditions.ApplyPressureBoundary(p)
 
         u_calculated, v_calculated = solver.PressureCorrection(u_star, v_star, p, RHO, TIMESTEP, H)
@@ -42,15 +47,16 @@ try:
         grid.u = np.copy(u_calculated)
         grid.v = np.copy(v_calculated)
         grid.p = np.copy(p)
-        #print(grid.u)
-        #print(grid.v)
-        #print(grid.p)
+
         print(steps)
         if steps % 40 == 0:
             visualise.Visualise(grid, steps)
+            convergence = np.max(np.abs(grid.u - u_before))
+            print(f"Convergence = {convergence}")
+        if np.max(np.abs(grid.u - u_before)) <= CONVERGENCE_TOLERANCE and np.max(np.abs(grid.v - v_before)) <= CONVERGENCE_TOLERANCE:
+            break
 
-        #response = input()
-        #if response != "":
-        #    play = False
+    visualise.SavePlot()
 except KeyboardInterrupt:
+    visualise.SavePlot()
     print("Application quit")

@@ -16,7 +16,8 @@ class Visualisation:
         self.pressure.contourf(grid.xv, grid.yv, grid.p)
         self.conflow.streamplot(grid.xv[0, :], grid.yv[:, 0], grid.u, grid.v)
         plt.pause(0.001)
-
+    def SavePlot(self):
+        plt.savefig('cfd.Re_10.png', dpi=150,bbox_inches='tight')
 
 if __name__ == "__main__":
     visual = Visualisation()
