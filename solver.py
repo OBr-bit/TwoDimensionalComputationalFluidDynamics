@@ -15,7 +15,7 @@ class Solver:
             for i in range(1, p.shape[0] - 1, 1):
                 for j in range(1, p.shape[1] - 1, 1):
                     p[i,j] = (p[i+1, j] + p[i-1,j] + p[i, j+1] + p[i,j-1] - math.pow(h, 2) * f[i,j]) / 4
-            print (p)
+            #print (p)
 
             runs = runs + 1
             if (np.max(np.abs(p - before)) <= tolerance or runs > maxRuns):
@@ -81,6 +81,16 @@ class Solver:
                 u_calculated[i,j] = u_star[i,j] - (delta_t / rho) * differentials.centralDifferenceFirst(p[i+1,j], p[i-1,j], h)
                 v_calculated[i,j] = v_star[i,j] - (delta_t / rho) * differentials.centralDifferenceFirst(p[i,j+1], p[i,j-1], h)
         return u_calculated, v_calculated
-        
-grid = Grid(0.1, 0, 1, 0, 1)
-Solver().PoissonSolver(grid.p, np.zeros(grid.p.shape), grid.h, 0.1, 100)
+    
+    def Divergence(self, u_star, v_star, h, rho, delta_t):
+        differentials = Differentials()
+        f = np.zeros_like(u_star)
+        for i in range(1, u_star.shape[0] - 1, 1):
+            for j in range(1, u_star.shape[1] - 1, 1):
+                f[i,j] = (rho/delta_t) * (differentials.centralDifferenceFirst(u_star[i+1, j], u_star[i-1, j], h) + differentials.centralDifferenceFirst(v_star[i, j+1], v_star[i, j-1], h))
+        return f
+
+
+if __name__ == "__main__":
+    grid = Grid(0.1, 0, 1, 0, 1)
+    Solver().PoissonSolver(grid.p, np.zeros(grid.p.shape), grid.h, 0.1, 100)
