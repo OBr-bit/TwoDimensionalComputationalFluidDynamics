@@ -95,7 +95,13 @@ class Solver:
                 f[i,j] = (rho/delta_t) * (differentials.centralDifferenceFirst(u_star[i, j+1], u_star[i, j-1], h) + differentials.centralDifferenceFirst(v_star[i+1, j], v_star[i-1, j], h))
         return f
 
-
+    def Vorticity(self, u, v, h):
+        differentials = Differentials()
+        vorticity = np.zeros_like(u)
+        for i in range(1, u.shape[0] - 1, 1):
+            for j in range(1, u.shape[1] - 1, 1):
+                vorticity[i,j] = differentials.centralDifferenceFirst(v[i+1, j], v[i-1, j], h) - differentials.centralDifferenceFirst(u[i, j+1], u[i, j-1], h)
+        return vorticity
 if __name__ == "__main__":
     grid = Grid(0.1, 0, 1, 0, 1)
     Solver().PoissonSolver(grid.p, np.zeros(grid.p.shape), grid.h, 0.1, 100)

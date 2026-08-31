@@ -12,7 +12,7 @@ TIMESTEP = 0.005
 RHO = 1
 TOLERANCE = 0.001
 MAX_ITERATIONS = 100
-CONVERGENCE_TOLERANCE = 0.0001
+CONVERGENCE_TOLERANCE = 0.00001
 boundary_conditions = BoundaryConditions()
 solver = Solver()
 visualise = Visualisation()
@@ -47,6 +47,7 @@ try:
         grid.u = np.copy(u_calculated)
         grid.v = np.copy(v_calculated)
         grid.p = np.copy(p)
+        grid.vorticity = solver.Vorticity(grid.u, grid.v, H)
 
         print(steps)
         if steps % 40 == 0:
@@ -55,8 +56,9 @@ try:
             print(f"Convergence = {convergence}")
         if np.max(np.abs(grid.u - u_before)) <= CONVERGENCE_TOLERANCE and np.max(np.abs(grid.v - v_before)) <= CONVERGENCE_TOLERANCE:
             break
-
+    visualise.Visualise(grid, steps)
     visualise.SavePlot()
 except KeyboardInterrupt:
+    visualise.Visualise(grid, steps)
     visualise.SavePlot()
     print("Application quit")
