@@ -27,6 +27,8 @@ play = True
 steps = 0
 u_before = np.zeros_like(grid.u)
 v_before = np.zeros_like(grid.v)
+
+visualise.Visualise(grid, steps, np.max(np.abs(grid.u - u_before)))
 try:
     while play:
         steps += 1
@@ -52,7 +54,7 @@ try:
         grid.u = np.copy(u_calculated)
         grid.v = np.copy(v_calculated)
         grid.p = np.copy(p)
-        
+
         grid.vorticity = solver.Vorticity(grid.u, grid.v, H)
 
         if steps % 40 == 0:
