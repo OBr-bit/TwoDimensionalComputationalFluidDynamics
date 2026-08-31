@@ -1,4 +1,5 @@
 import numpy as np
+
 class Grid:  
     def __init__ (self, h, firstX, secondX, firstY, secondY):
         self.h = h
@@ -13,11 +14,3 @@ class Grid:
         self.v = np.zeros(self.xv.shape)
         self.p = np.zeros(self.xv.shape)
         self.vorticity = np.zeros(self.xv.shape)
-        
-if __name__ == "__main__":
-    grid = Grid(0.1, 0, 1, 0, 1)
-    print(grid.xv)
-    print(grid.yv)
-    print(grid.u)
-    print(grid.v)
-    print(grid.p)

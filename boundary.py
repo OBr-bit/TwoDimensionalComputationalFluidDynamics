@@ -1,6 +1,7 @@
 class BoundaryConditions:
     def __init__(self, velocity) -> None:
         self.inlet_velocity = velocity
+        
     def ApplyBoundaryConditions(self, u, v):
         u[0, :] = 0
         u[-1, :] = self.inlet_velocity
