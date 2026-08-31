@@ -13,10 +13,12 @@ RHO = 1
 TOLERANCE = 0.001
 MAX_ITERATIONS = 100
 CONVERGENCE_TOLERANCE = 0.00001
-boundary_conditions = BoundaryConditions()
+LID_VELOCITY = 1
+CAVITY_WIDTH = 1
+boundary_conditions = BoundaryConditions(LID_VELOCITY)
 solver = Solver()
 grid = Grid(H, 0, 1, 0,1)
-visualise = Visualisation(grid)
+visualise = Visualisation(grid, H, NU, TIMESTEP, RHO,LID_VELOCITY, CAVITY_WIDTH)
 
 grid.u, grid.v = boundary_conditions.ApplyBoundaryConditions(grid.u, grid.v)
 grid.p = boundary_conditions.ApplyPressureBoundary(grid.p)
