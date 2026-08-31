@@ -1,5 +1,4 @@
 from boundary import BoundaryConditions
-import boundary
 from grid import Grid
 from solver import Solver
 from differentials import Differentials
@@ -15,6 +14,7 @@ MAX_ITERATIONS = 100
 CONVERGENCE_TOLERANCE = 0.00001
 LID_VELOCITY = 1
 CAVITY_WIDTH = 1
+
 boundary_conditions = BoundaryConditions(LID_VELOCITY)
 solver = Solver()
 grid = Grid(H, 0, 1, 0,1)
@@ -29,13 +29,17 @@ u_before = np.zeros_like(grid.u)
 v_before = np.zeros_like(grid.v)
 try:
     while play:
+        steps += 1
+        
         u_before = np.copy(grid.u)
         v_before = np.copy(grid.v)
-        steps += 1
+
         u_advection, v_advection = solver.AdvectionTerm(grid)
         u_viscosity, v_viscosity = solver.ViscosityTerm(grid, NU)
+
         u_star, v_star = solver.VelocityStep(grid.u, grid.v, u_viscosity, v_viscosity, u_advection, v_advection, TIMESTEP)
         u_star, v_star = boundary_conditions.ApplyBoundaryConditions(u_star, v_star)
+
         f = solver.Divergence(u_star, v_star, H, RHO, TIMESTEP)
 
         p = solver.PoissonSolver(grid.p, f, H, TOLERANCE, MAX_ITERATIONS)
@@ -43,23 +47,24 @@ try:
         p = boundary_conditions.ApplyPressureBoundary(p)
 
         u_calculated, v_calculated = solver.PressureCorrection(u_star, v_star, p, RHO, TIMESTEP, H)
-
         u_calculated, v_calculated = boundary_conditions.ApplyBoundaryConditions(u_calculated, v_calculated)
+
         grid.u = np.copy(u_calculated)
         grid.v = np.copy(v_calculated)
         grid.p = np.copy(p)
+        
         grid.vorticity = solver.Vorticity(grid.u, grid.v, H)
 
-        print(steps)
         if steps % 40 == 0:
-            visualise.Visualise(grid, steps)
-            convergence = np.max(np.abs(grid.u - u_before))
-            print(f"Convergence = {convergence}")
+            visualise.Visualise(grid, steps, np.max(np.abs(grid.u - u_before)))
+
         if np.max(np.abs(grid.u - u_before)) <= CONVERGENCE_TOLERANCE and np.max(np.abs(grid.v - v_before)) <= CONVERGENCE_TOLERANCE:
             break
-    visualise.Visualise(grid, steps)
+
+    visualise.Visualise(grid, steps, np.max(np.abs(grid.u - u_before)))
     visualise.SavePlot()
+
 except KeyboardInterrupt:
-    visualise.Visualise(grid, steps)
+    visualise.Visualise(grid, steps,np.max(np.abs(grid.u - u_before)))
     visualise.SavePlot()
     print("Application quit")
