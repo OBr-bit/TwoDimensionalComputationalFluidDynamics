@@ -1,0 +1,50 @@
+[
+    {
+        "name": "Re = 10",
+        "re": 10,
+        "nu": 0.1,
+        "lid_velocity": 1.0,
+        "h": 0.05,
+        "timestep": 0.001,
+        "rho": 1.0,
+        "tolerance": 0.001,
+        "max_iterations": 100,
+        "convergence_tolerance": 0.00001
+    },
+    {
+        "name": "Re = 100",
+        "re": 100,
+        "nu": 0.01,
+        "lid_velocity": 1.0,
+        "h": 0.05,
+        "timestep": 0.001,
+        "rho": 1.0,
+        "tolerance": 0.001,
+        "max_iterations": 200,
+        "convergence_tolerance": 0.00001
+    },
+    {
+        "name": "Re = 400",
+        "re": 400,
+        "nu": 0.0025,
+        "lid_velocity": 1.0,
+        "h": 0.025,
+        "timestep": 0.0005,
+        "rho": 1.0,
+        "tolerance": 0.001,
+        "max_iterations": 500,
+        "convergence_tolerance": 0.00001
+    },
+    {
+        "name": "Re = 1000",
+        "re": 1000,
+        "nu": 0.001,
+        "lid_velocity": 1.0,
+        "h": 0.02,
+        "timestep": 0.0002,
+        "rho": 1.0,
+        "tolerance": 0.0005,
+        "max_iterations": 1000,
+        "convergence_tolerance": 0.00001
+    }
+]

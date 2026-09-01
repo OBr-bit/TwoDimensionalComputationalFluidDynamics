@@ -3,16 +3,20 @@ from grid import Grid
 from solver import Solver
 from differentials import Differentials
 from visualisation import Visualisation
+from tests import Tests
 import numpy as np
 
-H = 0.05
-NU = 0.1
-TIMESTEP = 0.005
-RHO = 1
-TOLERANCE = 0.001
-MAX_ITERATIONS = 100
-CONVERGENCE_TOLERANCE = 0.00001
-LID_VELOCITY = 1
+test_cases = Tests()
+case = test_cases.SelectTestCase()
+
+H = case["h"]
+NU = case["nu"]
+TIMESTEP = case["timestep"]
+RHO = case["rho"]
+TOLERANCE = case["tolerance"]
+MAX_ITERATIONS = case["max_iterations"]
+CONVERGENCE_TOLERANCE = case["convergence_tolerance"]
+LID_VELOCITY = case["lid_velocity"]
 CAVITY_WIDTH = 1
 
 boundary_conditions = BoundaryConditions(LID_VELOCITY)
@@ -45,7 +49,7 @@ try:
         f = solver.Divergence(u_star, v_star, H, RHO, TIMESTEP)
 
         p = solver.PoissonSolver(grid.p, f, H, TOLERANCE, MAX_ITERATIONS)
-        p = solver.SmoothPressure(p)
+        # p = solver.SmoothPressure(p)  # DISABLED: smoother amplifies errors instead of damping them
         p = boundary_conditions.ApplyPressureBoundary(p)
 
         u_calculated, v_calculated = solver.PressureCorrection(u_star, v_star, p, RHO, TIMESTEP, H)

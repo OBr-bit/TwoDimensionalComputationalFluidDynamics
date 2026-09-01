@@ -95,5 +95,5 @@ class Solver:
         vorticity = np.zeros_like(u)
         for i in range(1, u.shape[0] - 1, 1):
             for j in range(1, u.shape[1] - 1, 1):
-                vorticity[i,j] = self.differential.centralDifferenceFirst(v[i+1, j], v[i-1, j], h) - self.differential.centralDifferenceFirst(u[i, j+1], u[i, j-1], h)
+                vorticity[i,j] = self.differential.centralDifferenceFirst(v[i, j+1], v[i, j-1], h) - self.differential.centralDifferenceFirst(u[i+1, j], u[i-1, j], h)
         return vorticity
