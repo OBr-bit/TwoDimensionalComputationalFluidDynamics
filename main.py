@@ -22,7 +22,7 @@ CAVITY_WIDTH = 1
 boundary_conditions = BoundaryConditions(LID_VELOCITY)
 solver = Solver()
 grid = Grid(H, 0, 1, 0,1)
-visualise = Visualisation(grid, H, NU, TIMESTEP, RHO,LID_VELOCITY, CAVITY_WIDTH)
+visualise = Visualisation(grid, H, NU, TIMESTEP, RHO,LID_VELOCITY, CAVITY_WIDTH, case["ghia_y"], case["ghia_u"])
 
 grid.u, grid.v = boundary_conditions.ApplyBoundaryConditions(grid.u, grid.v)
 grid.p = boundary_conditions.ApplyPressureBoundary(grid.p)

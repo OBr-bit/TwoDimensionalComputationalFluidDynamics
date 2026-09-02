@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 from grid import Grid
 
 class Visualisation:
-    def __init__(self, grid, h, nu, timestep, rho, u, L) -> None:
+    def __init__(self, grid, h, nu, timestep, rho, u, L, ghia_y, ghia_u) -> None:
         plt.ion()
         self.fig = plt.figure(figsize=(10, 8))
         plt.show(block=False)
@@ -10,6 +10,8 @@ class Visualisation:
         self.nu = nu
         self.timestep = timestep
         self.rho = rho
+        self.ghia_u = ghia_u
+        self.ghia_y = ghia_y
         self.RE = (u * L)/self.nu
 
     def Visualise(self, grid, steps, convergence):
@@ -44,6 +46,8 @@ class Visualisation:
         velocity_profile.set_xlabel('u velocity')
         velocity_profile.set_ylabel('y')
         velocity_profile.plot(grid.u[:,int(grid.u.shape[1] / 2)], grid.yv[:, 0])
+        velocity_profile.plot(self.ghia_u, self.ghia_y, 'o', label='Ghia et al. (1982)', color='red')
+        velocity_profile.legend()
         velocity_profile.axvline(x=0, color='grey', linestyle='--')
 
         params_details = self.fig.add_subplot(3, 2, 6)
